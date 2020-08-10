@@ -47,6 +47,6 @@ spring:
       enabled: true
 
 rtsp:
-  url: E:/视频/VID_20141122_212032.mp4
+  url: F:/视频/体育素材/篮球视频素材/纬来体育/伊朗vs中国完整版（全场录像带全场集锦）/2018亚运男籃决赛剪辑台版解说（伊朗vs中国）.mp4
   transport:
     type: udp

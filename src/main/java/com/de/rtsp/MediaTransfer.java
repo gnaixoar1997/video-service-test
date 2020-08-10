@@ -46,15 +46,15 @@ public class MediaTransfer {
     /**
      * 视频帧率
      */
-    public static int frameRate = 24;
+    public static int frameRate = 30;
     /**
      * 视频宽度
      */
-    public static int frameWidth = 480;
+    public static int frameWidth = 1080;
     /**
      * 视频高度
      */
-    public static int frameHeight = 270;
+    public static int frameHeight = 720;
 
     /**
      * 开启获取rtsp流，通过websocket传输数据
