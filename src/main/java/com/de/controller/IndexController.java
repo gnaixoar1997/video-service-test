@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Controller
 public class IndexController {
     AtomicInteger sign = new AtomicInteger();
-
     ConcurrentHashMap<Integer, String> pathMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<Integer, PipedOutputStream> outputStreamMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<Integer, PipedInputStream> inputStreamMap = new ConcurrentHashMap<>();
@@ -79,7 +78,6 @@ public class IndexController {
         try {
             String path = pathMap.get(id);
             PipedOutputStream byteOutputStream = outputStreamMap.get(id);
-//            print(new FileInputStream("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.mp4"), outputStream);
             new Thread(() -> {
                 MediaVideoTransfer mediaVideoTransfer = new MediaVideoTransfer();
                 mediaVideoTransfer.setOutputStream(byteOutputStream);
