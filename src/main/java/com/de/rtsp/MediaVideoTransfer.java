@@ -32,22 +32,6 @@ public class MediaVideoTransfer {
     private boolean isStart = false;
 
     /**
-     * 视频帧率
-     */
-    @Setter
-    public int frameRate = 30;
-    /**
-     * 视频宽度
-     */
-    @Setter
-    public int frameWidth = 1080;
-    /**
-     * 视频高度
-     */
-    @Setter
-    public int frameHeight = 720;
-
-    /**
      * 开启获取rtsp流，通过websocket传输数据
      */
     @Async
