@@ -4,7 +4,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.*;
-import org.springframework.scheduling.annotation.Async;
 
 import java.io.OutputStream;
 
@@ -32,9 +31,8 @@ public class MediaVideoTransfer {
     private boolean isStart = false;
 
     /**
-     * 开启获取rtsp流，通过websocket传输数据
+     * 开启获取rtsp流
      */
-    @Async
     public void live() {
         log.info("连接rtsp：" + rtspUrl + ",开始创建grabber");
         boolean isSuccess = createGrabber(rtspUrl);
@@ -52,7 +50,7 @@ public class MediaVideoTransfer {
      * @param rtsp 拉流地址
      * @return 创建成功与否
      */
-    public boolean createGrabber(String rtsp) {
+    private boolean createGrabber(String rtsp) {
         // 获取视频源
         try {
             grabber = FFmpegFrameGrabber.createDefault(rtsp);
@@ -81,7 +79,7 @@ public class MediaVideoTransfer {
     /**
      * 推送图片（摄像机直播）
      */
-    public void startCameraPush() {
+    private void startCameraPush() {
         if (grabber == null) {
             log.info("重试连接rtsp：" + rtspUrl + ",开始创建grabber");
             boolean isSuccess = createGrabber(rtspUrl);
