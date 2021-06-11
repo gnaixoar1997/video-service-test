@@ -1,0 +1,147 @@
+package com.de.rtsp;
+
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.bytedeco.ffmpeg.global.avcodec;
+import org.bytedeco.javacv.*;
+import org.springframework.scheduling.annotation.Async;
+
+import java.io.OutputStream;
+
+/**
+ * 转换rtsp为flv
+ *
+ * @author IT_CREATE
+ * @date 2021/6/8 12:00:00
+ */
+@Slf4j
+public class MediaVideoTransfer {
+    @Setter
+    private OutputStream outputStream;
+
+    @Setter
+    private String rtspUrl;
+
+    @Setter
+    private String rtspTransportType;
+
+    private FFmpegFrameGrabber grabber;
+
+    private FFmpegFrameRecorder recorder;
+
+    private boolean isStart = false;
+
+    /**
+     * 视频帧率
+     */
+    @Setter
+    public int frameRate = 30;
+    /**
+     * 视频宽度
+     */
+    @Setter
+    public int frameWidth = 1080;
+    /**
+     * 视频高度
+     */
+    @Setter
+    public int frameHeight = 720;
+
+    /**
+     * 开启获取rtsp流，通过websocket传输数据
+     */
+    @Async
+    public void live() {
+        log.info("连接rtsp：" + rtspUrl + ",开始创建grabber");
+        boolean isSuccess = createGrabber(rtspUrl);
+        if (isSuccess) {
+            log.info("创建grabber成功");
+        } else {
+            log.info("创建grabber失败");
+        }
+        startCameraPush();
+    }
+
+    /**
+     * 构造视频抓取器
+     *
+     * @param rtsp 拉流地址
+     * @return 创建成功与否
+     */
+    public boolean createGrabber(String rtsp) {
+        // 获取视频源
+        try {
+            grabber = FFmpegFrameGrabber.createDefault(rtsp);
+            grabber.setOption("rtsp_transport", rtspTransportType);
+            grabber.start();
+            isStart = true;
+
+            recorder = new FFmpegFrameRecorder(outputStream, grabber.getImageWidth(), grabber.getImageHeight(), grabber.getAudioChannels());
+            //avcodec.AV_CODEC_ID_H264  //AV_CODEC_ID_MPEG4
+            recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+            recorder.setFormat("flv");
+            recorder.setFrameRate(grabber.getFrameRate());
+            recorder.setSampleRate(grabber.getSampleRate());
+            recorder.setAudioChannels(grabber.getAudioChannels());
+            recorder.setFrameRate(grabber.getFrameRate());
+            return true;
+        } catch (FrameGrabber.Exception e) {
+            log.error("创建解析rtsp FFmpegFrameGrabber 失败");
+            log.error("create rtsp FFmpegFrameGrabber exception: ", e);
+            stop();
+            reset();
+            return false;
+        }
+    }
+
+    /**
+     * 推送图片（摄像机直播）
+     */
+    public void startCameraPush() {
+        if (grabber == null) {
+            log.info("重试连接rtsp：" + rtspUrl + ",开始创建grabber");
+            boolean isSuccess = createGrabber(rtspUrl);
+            if (isSuccess) {
+                log.info("创建grabber成功");
+            } else {
+                log.info("创建grabber失败");
+            }
+        }
+        try {
+            if (grabber != null) {
+                recorder.start();
+                Frame frame;
+                while (isStart && (frame = grabber.grabFrame()) != null) {
+                    recorder.setTimestamp(grabber.getTimestamp());
+                    recorder.record(frame);
+                }
+                stop();
+                reset();
+            }
+        } catch (FrameGrabber.Exception | RuntimeException | FrameRecorder.Exception e) {
+            log.error(e.getMessage(), e);
+            stop();
+            reset();
+        }
+    }
+
+    private void stop() {
+        try {
+            if (recorder != null) {
+                recorder.stop();
+                recorder.release();
+            }
+            if (grabber != null) {
+                grabber.stop();
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void reset() {
+        recorder = null;
+        grabber = null;
+        isStart = false;
+    }
+}
