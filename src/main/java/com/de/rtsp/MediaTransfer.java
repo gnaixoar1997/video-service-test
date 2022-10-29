@@ -32,6 +32,8 @@ import java.io.IOException;
 @Component
 @EnableAsync
 public class MediaTransfer {
+    @Value("${rtsp.enabled}")
+    private boolean enabled;
 
     @Value("${rtsp.url}")
     private String rtspUrl;
@@ -61,21 +63,26 @@ public class MediaTransfer {
      */
     @Async
     public void live() {
-        log.info("连接rtsp："+rtspUrl+",开始创建grabber");
-        grabber = createGrabber(rtspUrl);
-        if (grabber != null) {
-            log.info("创建grabber成功");
+        if(enabled) {
+            log.info("开启自动链接rtsp地址");
+            log.info("连接rtsp："+rtspUrl+",开始创建grabber");
+            grabber = createGrabber(rtspUrl);
+            if (grabber != null) {
+                log.info("创建grabber成功");
+            } else {
+                log.info("创建grabber失败");
+            }
+            startCameraPush();
         } else {
-            log.info("创建grabber失败");
+            log.warn("未开启自动链接rtsp地址");
         }
-        startCameraPush();
     }
 
     /**
      * 构造视频抓取器
      *
      * @param rtsp 拉流地址
-     * @return
+     * @return FFmpegFrameGrabber
      */
     public FFmpegFrameGrabber createGrabber(String rtsp) {
         // 获取视频源
