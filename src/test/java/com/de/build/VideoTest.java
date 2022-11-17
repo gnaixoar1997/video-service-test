@@ -44,13 +44,13 @@ public class VideoTest {
     }
 
     private static void test1() throws Exception {
-        FileOutputStream fileOutputStream = new FileOutputStream("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.flv");
-        MediaVideoTransfer mediaVideoTransfer = new MediaVideoTransfer();
-        mediaVideoTransfer.setOutputStream(fileOutputStream);
-        mediaVideoTransfer.setRtspTransportType("udp");
-        mediaVideoTransfer.setRtspUrl("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.mp4");
-        mediaVideoTransfer.live();
-
-        fileOutputStream.close();
+//        FileOutputStream fileOutputStream = new FileOutputStream("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.flv");
+//        MediaVideoTransfer mediaVideoTransfer = new MediaVideoTransfer();
+//        mediaVideoTransfer.setOutputStream(fileOutputStream);
+//        mediaVideoTransfer.setRtspTransportType("udp");
+//        mediaVideoTransfer.setRtspUrl("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.mp4");
+//        mediaVideoTransfer.live();
+//
+//        fileOutputStream.close();
     }
 }

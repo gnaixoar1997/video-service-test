@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Controller
 public class IndexController {
+
     AtomicInteger sign = new AtomicInteger();
     ConcurrentHashMap<Integer, String> pathMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<Integer, PipedOutputStream> outputStreamMap = new ConcurrentHashMap<>();
@@ -64,13 +65,13 @@ public class IndexController {
     @GetMapping("/getVideo")
     public void getVideo(HttpServletRequest request, HttpServletResponse response, int id) {
         log.info("进来了" + id);
-        String path = pathMap.get(id);
+//        String path = pathMap.get(id);
         String fileName = UUID.randomUUID().toString();
         // 用于测试的时候，本地文件读取走这里
-        if (path.endsWith(".mp4")) {
-            String[] split = new File(path).getName().split("\\.");
-            fileName = split[0];
-        }
+//        if (path.endsWith(".mp4")) {
+//            String[] split = new File(path).getName().split("\\.");
+//            fileName = split[0];
+//        }
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".flv");
         try {
             ServletOutputStream outputStream = response.getOutputStream();
@@ -87,12 +88,13 @@ public class IndexController {
         try {
             String path = pathMap.get(id);
             PipedOutputStream pipedOutputStream = outputStreamMap.get(id);
+
             new Thread(() -> {
                 MediaVideoTransfer mediaVideoTransfer = new MediaVideoTransfer();
                 mediaVideoTransfer.setOutputStream(pipedOutputStream);
-                mediaVideoTransfer.setRtspTransportType("udp");
+                mediaVideoTransfer.setRtspTransportType("tcp");
                 mediaVideoTransfer.setRtspUrl(path);
-                mediaVideoTransfer.live();
+                mediaVideoTransfer.live(path);
             }).start();
 
             print(inputStreamMap.get(id), outputStream);
@@ -122,10 +124,10 @@ public class IndexController {
             }
         }
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        IndexController indexController = new IndexController();
-        AjaxResult ajaxResult = indexController.putVideoPath("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.mp4");
-        indexController.write((int) ajaxResult.get("data"), new FileOutputStream("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分(负担).flv"));
-    }
+//
+//    public static void main(String[] args) throws FileNotFoundException {
+//        IndexController indexController = new IndexController();
+//        AjaxResult ajaxResult = indexController.putVideoPath("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分.mp4");
+//        indexController.write((int) ajaxResult.get("data"), new FileOutputStream("F:\\视频\\体育素材\\篮球视频素材\\哇哈体育\\篮球\\有片头进球集锦亚运决赛分p（中国vs伊朗）\\2018亚运男篮决赛台语解说剪辑版2三部分(负担).flv"));
+//    }
 }

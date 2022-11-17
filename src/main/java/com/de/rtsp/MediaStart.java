@@ -19,13 +19,13 @@ import javax.annotation.PostConstruct;
 @Component
 public class MediaStart {
 
-    @Autowired
-    MediaTransfer mediaTransfer;
+//    @Autowired
+//    MediaTransfer mediaTransfer;
 
-    @PostConstruct
-    public void init() {
-        //异步加载，因为初始化时执行，live里面是死循环监听rtsp,如果不异步操作，就会卡死在初始化阶段，项目就会起不来
-        mediaTransfer.live();
-    }
+//    @PostConstruct
+//    public void init() {
+//        //异步加载，因为初始化时执行，live里面是死循环监听rtsp,如果不异步操作，就会卡死在初始化阶段，项目就会起不来
+//        mediaTransfer.live();
+//    }
 
 }
